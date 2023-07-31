@@ -25,30 +25,51 @@ class DetailTodoViewController: UIViewController  {
         tableView.register(UINib(nibName: "ContentTableViewCell", bundle: nil), forCellReuseIdentifier: "contentCell")
         tableView.register(UINib(nibName: "PriorityTableViewCell", bundle: nil), forCellReuseIdentifier: "priorityCell")
         tableView.register(UINib(nibName: "ProgressTableViewCell", bundle: nil), forCellReuseIdentifier: "progressCell")
-        print("fgsa",self.detailTodoViewModel.todo)
     }
     
     @IBAction func tapDoneButton(_ sender: UIBarButtonItem) {
+//        print("todoDeatilVC", self.detailTodoViewModel.todo)
+        let isNewTodo = self.detailTodoViewModel.getIsNewTodo()
+        let id = self.detailTodoViewModel.getID()
+        let title = self.detailTodoViewModel.getTitle()
+        let content = self.detailTodoViewModel.getContent()
+        let colorCount = self.detailTodoViewModel.getColorCount()
+        let progressCount = self.detailTodoViewModel.getProgressCount()
         
-        guard let titleCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? TitleTableViewCell else { return }
+        if isNewTodo {
+            
+            TodosAPI.addATodo(title: title, content: content, imageURl: "", progressCount: progressCount, colorCount: colorCount) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let todo):
+                    print(todo)
+                    DispatchQueue.main.async {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                case .failure(let error):
+                    print("DetailTodoVC - Failed to add Todo", error)
+                }
+            }
+
+        } else {
+            TodosAPI.updateATodo(id: id, title: title, content: content, imageURl: "", progressCount: progressCount, colorCount: colorCount) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let updatedTodoID):
+                    if let id = updatedTodoID {
+                        print("Todo ID: \(id)가 업데이트 되었습니다.")
+                        DispatchQueue.main.async {
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    }
+                case .failure(let error):
+                    print("DetailTodoVC - Failed to updateTodo", error)
+                }
+            }
+        }
+
         
-        guard let contentCell = tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? ContentTableViewCell else { return }
         
-        guard let priorityCell = tableView.cellForRow(at: IndexPath(row: 0, section: 3)) as? PriorityTableViewCell else { return }
-        
-        guard let progressCell = tableView.cellForRow(at: IndexPath(row: 0, section: 4)) as? ProgressTableViewCell else { return }
-        
-        
-        let newTitle = titleCell.titleTextField.text
-        let newContent = contentCell.contentTextView.text
-        
-        
-        self.detailTodoViewModel.todo?.title = newTitle
-        self.detailTodoViewModel.todo?.content = newContent
-       
-//        listViewModel.test123(todo: self.viewModel.todo ?? Todo()) {
-//            self.navigationController?.popViewController(animated: true)
-//        }
     }
 }
 
@@ -67,21 +88,23 @@ extension DetailTodoViewController: UITableViewDataSource {
         case 0:
             //MARK: - 이미지 셀
             let cell = tableView.dequeueReusableCell(withIdentifier: "imageCell", for: indexPath) as! AddImageTableViewCell
-//            cell.addImageButton.addTarget(self, action: #selector(addImageButtonClicked(sender:)), for: .touchUpInside)
+            //            cell.addImageButton.addTarget(self, action: #selector(addImageButtonClicked(sender:)), for: .touchUpInside)
             
             cell.addedImage.image = self.detailTodoViewModel.todo?.image
             return cell
         case 1:
             //MARK: - 제목 셀
             let cell = tableView.dequeueReusableCell(withIdentifier: "titleCell", for: indexPath) as! TitleTableViewCell
-            cell.titleTextField.text = self.detailTodoViewModel.todo?.title
+            cell.titleTextField.text = self.detailTodoViewModel.getTitle()
+            cell.titleTextField.addTarget(self, action: #selector(titleTextFieldChanged(sender:)), for: .editingChanged)
             return cell
             
         case 2:
             //MARK: - 내용 셀
             let cell = tableView.dequeueReusableCell(withIdentifier: "contentCell", for: indexPath) as! ContentTableViewCell
             
-            cell.contentTextView.text = self.detailTodoViewModel.todo?.content
+            cell.contentTextView.text = self.detailTodoViewModel.getContent()
+            cell.contentTextView.delegate = self
             
             return cell
             
@@ -89,18 +112,16 @@ extension DetailTodoViewController: UITableViewDataSource {
             //MARK: - 중요도 셀(빨, 노, 파)
             let cell = tableView.dequeueReusableCell(withIdentifier: "priorityCell", for: indexPath) as! PriorityTableViewCell
             //기존의 할일의 중요도를 그리는 부분
-            let colorCount = self.detailTodoViewModel.todo?.colorCount
+            let colorCount = self.detailTodoViewModel.getColorCount()
             cell.priorityButtons.forEach { button in
-                if button.tag == (colorCount ?? 0) + 200 { //red = 200, yellow = 201, blue = 202(colorCount를 버튼의 태그와 맞춤)
+                button.addTarget(self, action: #selector(priorityButtonClicked(sender:)), for: .touchUpInside)
+                if button.tag == (colorCount) + 200 { //red = 200, yellow = 201, blue = 202(colorCount를 버튼의 태그와 맞춤)
                     button.layer.borderWidth = 2
                     button.layer.borderColor = UIColor.white.cgColor
+                    
                 }
             }
             
-            //각각의 중요도 버튼에 액션 추가해주기
-//            for index in cell.priorityButtons.indices {
-//                cell.priorityButtons[index].addTarget(self, action: #selector(priorityButtonClicked(sender:)), for: .touchUpInside)
-//            }
             return cell
             
         case 4:
@@ -108,7 +129,7 @@ extension DetailTodoViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "progressCell", for: indexPath) as! ProgressTableViewCell
             // 기존의 할일의 진행도를 그리는 부분
             
-            let progressCount = self.detailTodoViewModel.todo?.progressCount //1번개.tag = 100, 2번개.tag = 101, 3번개.tag = 102 (progressCount를 버튼의 태그와 맞춤)
+            let progressCount = self.detailTodoViewModel.getProgressCount() //1번개.tag = 100, 2번개.tag = 101, 3번개.tag = 102 (progressCount를 버튼의 태그와 맞춤)
             switch progressCount {
             case 0:
                 cell.progressButtons[0].tintColor = UIColor.importanceBlue
@@ -128,13 +149,10 @@ extension DetailTodoViewController: UITableViewDataSource {
                 cell.progressButtons[2].tintColor = UIColor.deselectedColor
             }
             
+            cell.progressButtons.forEach { button in
+                button.addTarget(self, action: #selector(progressButtonClicked(sender:)), for: .touchUpInside)
+            }
             
-            
-            //각각의 진행도 버튼에 액션 추가해주기
-            //            for index in cell.progressButtons.indices {
-            //
-            //                cell.progressButtons[index].addTarget(self, action: #selector(progressButtonClicked(sender:)), for: .touchUpInside)
-            //            }
             return cell
             
         default:
@@ -143,22 +161,29 @@ extension DetailTodoViewController: UITableViewDataSource {
         }
     }
 }
+
+extension DetailTodoViewController: UITableViewDelegate {
     
-    extension DetailTodoViewController: UITableViewDelegate {
-        
-        
-        
-        
+}
+
+
+//MARK: - 각 셀의 버튼에서 실행할 함수 와 사진첩에 접근해 이미지를 선택하는 @objc func들
+extension DetailTodoViewController: UITextViewDelegate /* PHPickerViewControllerDelegate */ {
+   
+    @objc func titleTextFieldChanged(sender: UITextField) {
+        print("titleTextFieldChanged")
+        self.detailTodoViewModel.updateTitle(text: sender.text ?? "")
     }
     
-    
-//MARK: - 각 셀의 버튼에서 실행할 함수 와 사진첩에 접근해 이미지를 선택하는 @objc func들
-extension DetailTodoViewController/*: PHPickerViewControllerDelegate */{
+    func textViewDidChange(_ textView: UITextView) {
+        self.detailTodoViewModel.updateContent(text: textView.text)
+    }
     
     @objc func priorityButtonClicked(sender: CustomButton) {
         guard let priorityCell = tableView.cellForRow(at: IndexPath(row: 0, section: 3)) as? PriorityTableViewCell else { return }
         if sender.tag == 200 {
-            priorityCell.priorityCount = 0
+            self.detailTodoViewModel.updateColorCount(colorCount: 0)
+
             priorityCell.priorityButtons.forEach { sender in
                 if sender.tag == 200 {
                     selectedPriority(button: sender)
@@ -168,7 +193,8 @@ extension DetailTodoViewController/*: PHPickerViewControllerDelegate */{
             }
             
         } else if sender.tag == 201 {
-            priorityCell.priorityCount = 1
+            self.detailTodoViewModel.updateColorCount(colorCount: 1)
+
             priorityCell.priorityButtons.forEach { sender in
                 if sender.tag == 201 {
                     selectedPriority(button: sender)
@@ -179,7 +205,8 @@ extension DetailTodoViewController/*: PHPickerViewControllerDelegate */{
             
             
         } else {
-            priorityCell.priorityCount = 2
+            self.detailTodoViewModel.updateColorCount(colorCount: 2)
+            
             priorityCell.priorityButtons.forEach { sender in
                 if sender.tag == 202 {
                     selectedPriority(button: sender)
@@ -204,7 +231,8 @@ extension DetailTodoViewController/*: PHPickerViewControllerDelegate */{
     @objc func progressButtonClicked(sender: UIButton) {
         guard let progressCell = tableView.cellForRow(at: IndexPath(row: 0, section: 4)) as? ProgressTableViewCell else { return }
         if sender.tag == 100 { //빨강
-            progressCell.progressCount = 0
+            self.detailTodoViewModel.updateProgressCount(progressCount: 0)
+            
             progressCell.progressButtons.forEach { sender in
                 if sender.tag <= 100 {
                     sender.tintColor = UIColor.importanceBlue
@@ -213,8 +241,10 @@ extension DetailTodoViewController/*: PHPickerViewControllerDelegate */{
                 }
             }
             
+            
         } else if sender.tag == 101 { //노랑
-            progressCell.progressCount = 1
+            self.detailTodoViewModel.updateProgressCount(progressCount: 1)
+            
             progressCell.progressButtons.forEach { sender in
                 if sender.tag <= 101 {
                     sender.tintColor = UIColor.importanceBlue
@@ -224,7 +254,8 @@ extension DetailTodoViewController/*: PHPickerViewControllerDelegate */{
             }
             
         } else { //파랑
-            progressCell.progressCount = 2
+            self.detailTodoViewModel.updateProgressCount(progressCount: 2)
+            
             progressCell.progressButtons.forEach { sender in
                 sender.tintColor = UIColor.importanceBlue
                 

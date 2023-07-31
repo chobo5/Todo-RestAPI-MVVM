@@ -17,7 +17,45 @@ class DetailTodoViewModel {
     }
     
     
+    func updateTitle(text: String) {
+        self.todo?.title = text
+    }
     
+    func updateContent(text: String) {
+        self.todo?.content = text
+    }
+    
+    func updateProgressCount(progressCount: Int) {
+        self.todo?.progressCount = progressCount
+    }
+    
+    func updateColorCount(colorCount: Int) {
+        self.todo?.colorCount = colorCount
+    }
+    
+    func getIsNewTodo() -> Bool {
+        return self.isNewTodo ?? true
+    }
+    
+    func getID() -> Int {
+        return self.todo?.id ?? 0
+    }
+    
+    func getTitle() -> String {
+        return self.todo?.title ?? "제목이 없습니다."
+    }
+    
+    func getContent() -> String {
+        return self.todo?.content ?? "내용이 없습니다."
+    }
+    
+    func getProgressCount() -> Int {
+        return self.todo?.progressCount ?? 0
+    }
+    
+    func getColorCount() -> Int {
+        return self.todo?.colorCount ?? 0
+    }
 //    func downloadImage(completion: @escaping (Result<UIImage, Error>) -> Void) {
 //        guard let imageURL = self.todo?.imageURl else { return }
 //

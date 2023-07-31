@@ -11,9 +11,11 @@ class TitleTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleTextField: UITextField!
     
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         titleTextField.setPlaceholderColor(.systemGray)
+
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
