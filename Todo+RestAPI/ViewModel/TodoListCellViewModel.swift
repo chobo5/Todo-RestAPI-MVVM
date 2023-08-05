@@ -7,9 +7,14 @@
 
 import Foundation
 
-struct TodoListCellViewModel {
-    private let todo: Todo
+class TodoListCellViewModel {
     
+    var todo: Todo
+    
+    init(todo: Todo) {
+        self.todo = todo
+    }
+
     var title: String {
         guard let title = self.todo.title else { return "제목없음"}
         return title
@@ -30,9 +35,9 @@ struct TodoListCellViewModel {
         return colorCount
     }
     
-    init(todo: Todo) {
-        self.todo = todo
+    func changeProgressCount(progressCount: Int) {
+        self.todo.progressCount = progressCount
+        self.todo.isEdited = true
+
     }
-    
-    
 }

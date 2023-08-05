@@ -10,8 +10,6 @@ import UIKit
 class ProgressTableViewCell: UITableViewCell {
     
     @IBOutlet var progressButtons: [UIButton]!
- 
-    var progressCount: Int = 0
 
     override func awakeFromNib() {
         super.awakeFromNib()

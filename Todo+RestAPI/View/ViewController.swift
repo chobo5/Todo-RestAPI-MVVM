@@ -8,9 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
-    
-    
+
     @IBOutlet var searchBar: UISearchBar!
     @IBOutlet weak var addButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
@@ -22,21 +20,32 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
         setupTableView()
         setupNavigationbar()
         setupSearchbar()
         setupAddButton()
-        
-        fetchTodos()
-        
-    }
+
     
+        self.todoListViewModel.todos.bind { [weak self] _ in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+        
+        self.todoListViewModel.completedTodos.bind { [weak self] _ in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+
+        self.todoListViewModel.fetchTodos()
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         //todo의 isEdited = true인것 업데이트
-        updateTodos()
+        self.todoListViewModel.updateTodos()
     }
     
     //MARK: - UI Setting
@@ -74,63 +83,24 @@ class ViewController: UIViewController {
         self.addButton.setGradiant(color1: UIColor.gradiant1 ?? UIColor.white, color2: UIColor.gradiant2 ?? UIColor.white, color3: UIColor.gradiant4 ?? UIColor.white, color4: UIColor.gradiant4 ?? UIColor.white)
     }
     
-    //MARK: - 모든 할일 받아오기
-    private func fetchTodos() {
-        TodosAPI.fetchTodos { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let todos):
-//                print("affag",response)
-                self.todoListViewModel.todos = todos.filter{ $0.progressCount != 2}
-                self.todoListViewModel.completedTodos = todos.filter { $0.progressCount == 2}
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            case .failure(let error):
-                print("Failed to fetch todos:", error)
-            }
-        }
-    }
     
-    //MARK: - 할일 업데이트 하기
-    private func updateTodos() {
-        self.todoListViewModel.editedTodos().forEach { todo in
-            TodosAPI.updateATodo(id: todo.id ?? 1,
-                                 title: todo.title ?? "제목이 없습니다.",
-                                 content: todo.content ?? "내용이 없습니다.",
-                                 imageURl: todo.imageURL ?? "",
-                                 progressCount: todo.progressCount ?? 0,
-                                 colorCount: todo.colorCount ?? 0) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let id):
-                    if let id = id {
-                        print("id: \(id) todo is updated")
-                    }
-                case .failure(let failure):
-                    print("ViewController - Failed to update a todo",failure)
-                }
-                
-                
-            }
-        }
-    }
+    
     
     //MARK: - Action
     @IBAction func addButtonClicked(_ sender: UIButton) {
         guard let vc = storyboard?.instantiateViewController(withIdentifier: "detailTodo") as? DetailTodoViewController else { return }
         
-        let detailViewModel = DetailTodoViewModel(todo: Todo(colorCount: 1,
-                                                             content: "",
-                                                             createdDate: "", id: 0,
+        vc.detailTodoViewModel = DetailTodoViewModel(todo: Todo(colorCount: 1,
+                                                             content: "내용을 입력해주세요",
+                                                             createdDate: "",
+                                                             id: 0,
                                                              imageURL: "",
                                                              modifiedDate: "",
                                                              progressCount: 1,
-                                                             title: "",
+                                                             title: "제목을 입력해주세요",
                                                              isEdited: false,
                                                              image: UIImage()),
-                                                  isNewTodo: true)
-        vc.detailTodoViewModel = detailViewModel
+                                                  isNewTodo: true, listViewModel: self.todoListViewModel, indexPath: IndexPath(row: 1, section: 3))
         navigationController?.pushViewController(vc, animated: false)
     }
 }
@@ -182,26 +152,27 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoTableViewCell
             //뷰모델을 통한 cell에 데이터 적용
             guard let todo = todoListViewModel.todoAtIndex(indexPath.row) else { return UITableViewCell() }
-            self.cellViewModel = TodoListCellViewModel(todo: todo)
-            cell.configure(with: self.cellViewModel)
+            cell.listViewModel = self.todoListViewModel
+            cell.cellViewModel = TodoListCellViewModel(todo: todo)
+            if let cellViewModel = cell.cellViewModel {
+                cell.configure(with: cellViewModel)
+            }
             
             cell.selectionStyle = .none
-            cell.progressButtons.forEach { button in
-                button.addTarget(self, action: #selector(tapProgressButton(sender:)), for: .touchUpInside)
-            }
+
             return cell
             
         }else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as! TodoTableViewCell
             //뷰모델을 통한 cell에 데이터 적용
             guard let todo = todoListViewModel.completedTodoAtIndex(indexPath.row) else { return UITableViewCell()}
-            self.cellViewModel = TodoListCellViewModel(todo: todo)
-            cell.configure(with: self.cellViewModel)
-            
-            cell.selectionStyle = .none
-            cell.progressButtons.forEach { button in
-                button.addTarget(self, action: #selector(tapProgressButton(sender:)), for: .touchUpInside)
+            cell.listViewModel = self.todoListViewModel
+            cell.cellViewModel = TodoListCellViewModel(todo: todo)
+            if let cellViewModel = cell.cellViewModel {
+                cell.configure(with: cellViewModel)
             }
+            cell.selectionStyle = .none
+
             return cell
         }
     }
@@ -209,70 +180,85 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let vc = storyboard?.instantiateViewController(withIdentifier: "detailTodo") as? DetailTodoViewController else { return }
         if indexPath.section == 0 {
-            let detailViewModel = DetailTodoViewModel(todo: todoListViewModel.todoAtIndex(indexPath.row), isNewTodo: false)
+            let detailViewModel = DetailTodoViewModel(todo: self.todoListViewModel.todoAtIndex(indexPath.row),
+                                                      isNewTodo: false,
+                                                      listViewModel: self.todoListViewModel,
+                                                      indexPath: indexPath)
             vc.detailTodoViewModel = detailViewModel
-            vc.listViewModel = todoListViewModel
+            
         } else {
-            let detailViewModel = DetailTodoViewModel(todo: todoListViewModel.completedTodoAtIndex(indexPath.row), isNewTodo: false)
+            let detailViewModel = DetailTodoViewModel(todo: self.todoListViewModel.completedTodoAtIndex(indexPath.row),
+                                                      isNewTodo: false,
+                                                      listViewModel: self.todoListViewModel,
+                                                      indexPath: indexPath)
             vc.detailTodoViewModel = detailViewModel
-            vc.listViewModel = todoListViewModel
         }
         
         navigationController?.pushViewController(vc, animated: false)
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            //MARK: - 할일 삭제하기
+            //완료되지 않은 할일 삭제
+            print("indexPath",indexPath)
+            self.todoListViewModel.deleteATodo(indexPath: indexPath) 
+
+        }
     }
 }
 
 //MARK: - @objc func
 extension ViewController {
     //MARK: - 완료되지 않은 todosArray에서 progressButton을 tap할때
-    @objc func tapProgressButton(sender: UIButton) {
-        let contentView = sender.superview?.superview //계층: button < stackview < cellView < cell
-        guard let cell = contentView?.superview as? UITableViewCell else { return }
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-        
-        guard let todoCell = tableView.cellForRow(at: IndexPath(row: indexPath.row, section: indexPath.section)) as? TodoTableViewCell else { return }
-        
-        //progressCount와 isEdit 변경
-        //listViewModel.updateProgressCount(buttonTag: sender.tag, indexPath: indexPath)
-        
-        
-        if sender.tag == 0 {
-            //todoListViewModel의
-            todoListViewModel.changeProgressCount(indexPath: indexPath, progressCount: 0)
-            //progressCount UI변경
-            todoCell.progressButtons.forEach { button in
-                if button.tag <= 0 {
-                    button.tintColor = UIColor.importanceBlue
-                } else {
-                    button.tintColor = UIColor.deselectedColor
-                }
-            }
-            
-        } else if sender.tag == 1 {
-            todoListViewModel.changeProgressCount(indexPath: indexPath, progressCount: 1)
-            //progressCount UI변경
-            todoCell.progressButtons.forEach { button in
-                if button.tag <= 1 {
-                    button.tintColor = UIColor.importanceBlue
-                } else {
-                    button.tintColor = UIColor.deselectedColor
-                }
-            }
-            
-        } else {
-            todoListViewModel.changeProgressCount(indexPath: indexPath, progressCount: 2)
-            todoCell.progressButtons.forEach { button in
-                button.tintColor = UIColor.importanceBlue
-            }
-        }
-        //PrgressCount에 따라 배열 이동시켜주기
-        self.todoListViewModel.moveTodoElement(indexPath: indexPath) {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
-    }
-    
+//    @objc func tapProgressButton(sender: UIButton) {
+//        let contentView = sender.superview?.superview //계층: button < stackview < cellView < cell
+//        guard let cell = contentView?.superview as? UITableViewCell else { return }
+//        guard let indexPath = tableView.indexPath(for: cell) else { return }
+//
+//        guard let todoCell = tableView.cellForRow(at: IndexPath(row: indexPath.row, section: indexPath.section)) as? TodoTableViewCell else { return }
+//
+//        //progressCount와 isEdit 변경
+//        //listViewModel.updateProgressCount(buttonTag: sender.tag, indexPath: indexPath)
+//
+//
+//        if sender.tag == 0 {
+//            //todoListViewModel의
+//            todoListViewModel.changeProgressCount(indexPath: indexPath, progressCount: 0)
+//            //progressCount UI변경
+//            todoCell.progressButtons.forEach { button in
+//                if button.tag <= 0 {
+//                    button.tintColor = UIColor.importanceBlue
+//                } else {
+//                    button.tintColor = UIColor.deselectedColor
+//                }
+//            }
+//
+//        } else if sender.tag == 1 {
+//            todoListViewModel.changeProgressCount(indexPath: indexPath, progressCount: 1)
+//            //progressCount UI변경
+//            todoCell.progressButtons.forEach { button in
+//                if button.tag <= 1 {
+//                    button.tintColor = UIColor.importanceBlue
+//                } else {
+//                    button.tintColor = UIColor.deselectedColor
+//                }
+//            }
+//
+//        } else {
+//            todoListViewModel.changeProgressCount(indexPath: indexPath, progressCount: 2)
+//            todoCell.progressButtons.forEach { button in
+//                button.tintColor = UIColor.importanceBlue
+//            }
+//        }
+//        //PrgressCount에 따라 배열 이동시켜주기
+//        self.todoListViewModel.moveTodoElement(indexPath: indexPath) {
+//            DispatchQueue.main.async {
+//                self.tableView.reloadData()
+//            }
+//        }
+//    }
+//
     
 }
 

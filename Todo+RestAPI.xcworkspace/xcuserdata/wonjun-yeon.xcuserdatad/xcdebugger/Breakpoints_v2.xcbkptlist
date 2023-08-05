@@ -78,10 +78,10 @@
             filePath = "Todo+RestAPI/API/TodosAPI+Closure.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "271"
-            endingLineNumber = "271"
-            landmarkName = "TodosAPI"
-            landmarkType = "21">
+            startingLineNumber = "279"
+            endingLineNumber = "279"
+            landmarkName = "updateATodo(id:title:content:imageURl:progressCount:colorCount:completion:)"
+            landmarkType = "7">
             <Locations>
                <Location
                   uuid = "AD406EAD-7108-43F8-9164-0443E5DB30E8 - 9eb60a0772bbf8a5"
@@ -289,6 +289,228 @@
             startingLineNumber = "168"
             endingLineNumber = "168"
             landmarkName = "sendImageOnly(image:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DA7E3610-B958-41F9-8F2F-16618BB9910B"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Todo+RestAPI/CustomCell/TodoTableViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "TabProgressButtons(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "90E76E71-7178-4B79-8613-307E491178EE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Todo+RestAPI/CustomCell/TodoTableViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "41"
+            endingLineNumber = "41"
+            landmarkName = "TabProgressButtons(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "90E76E71-7178-4B79-8613-307E491178EE - 10dc6597f181b59f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Todo_RestAPI.TodoTableViewCell.TabProgressButtons(Any) -&gt; ()"
+                  moduleName = "Todo+RestAPI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wonjun-yeon/Desktop/Todo+RestAPI(MVVM)/Todo+RestAPI/CustomCell/TodoTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "41"
+                  endingLineNumber = "41"
+                  offsetFromSymbolStart = "1092">
+               </Location>
+               <Location
+                  uuid = "90E76E71-7178-4B79-8613-307E491178EE - 10dc6597f181b59f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Todo_RestAPI.TodoTableViewCell.TabProgressButtons(Any) -&gt; ()"
+                  moduleName = "Todo+RestAPI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wonjun-yeon/Desktop/Todo+RestAPI(MVVM)/Todo+RestAPI/CustomCell/TodoTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "41"
+                  endingLineNumber = "41"
+                  offsetFromSymbolStart = "1112">
+               </Location>
+               <Location
+                  uuid = "90E76E71-7178-4B79-8613-307E491178EE - 10dc6597f181b59f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Todo_RestAPI.TodoTableViewCell.TabProgressButtons(Any) -&gt; ()"
+                  moduleName = "Todo+RestAPI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wonjun-yeon/Desktop/Todo+RestAPI(MVVM)/Todo+RestAPI/CustomCell/TodoTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "41"
+                  endingLineNumber = "41"
+                  offsetFromSymbolStart = "1088">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "224DF728-F479-4BFF-A140-512D63124E23"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Todo+RestAPI/CustomCell/TodoTableViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "TabProgressButtons(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "224DF728-F479-4BFF-A140-512D63124E23 - 10dc6597f181b5fe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Todo_RestAPI.TodoTableViewCell.TabProgressButtons(Any) -&gt; ()"
+                  moduleName = "Todo+RestAPI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wonjun-yeon/Desktop/Todo+RestAPI(MVVM)/Todo+RestAPI/CustomCell/TodoTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42"
+                  offsetFromSymbolStart = "1332">
+               </Location>
+               <Location
+                  uuid = "224DF728-F479-4BFF-A140-512D63124E23 - 10dc6597f181b5fe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Todo_RestAPI.TodoTableViewCell.TabProgressButtons(Any) -&gt; ()"
+                  moduleName = "Todo+RestAPI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wonjun-yeon/Desktop/Todo+RestAPI(MVVM)/Todo+RestAPI/CustomCell/TodoTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42"
+                  offsetFromSymbolStart = "1352">
+               </Location>
+               <Location
+                  uuid = "224DF728-F479-4BFF-A140-512D63124E23 - 10dc6597f181b5fe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Todo_RestAPI.TodoTableViewCell.TabProgressButtons(Any) -&gt; ()"
+                  moduleName = "Todo+RestAPI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wonjun-yeon/Desktop/Todo+RestAPI(MVVM)/Todo+RestAPI/CustomCell/TodoTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42"
+                  offsetFromSymbolStart = "1328">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "13CF583B-11DE-4BCE-931E-C7B295834359"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Todo+RestAPI/ViewModel/TodoListViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "deleteATodo(indexPath:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "13CF583B-11DE-4BCE-931E-C7B295834359 - 36457150c169ee99"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Todo_RestAPI.TodoListViewModel.deleteATodo(indexPath: Foundation.IndexPath) -&gt; ()"
+                  moduleName = "Todo+RestAPI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wonjun-yeon/Desktop/Todo+RestAPI(MVVM)/Todo+RestAPI/ViewModel/TodoListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "130"
+                  endingLineNumber = "130"
+                  offsetFromSymbolStart = "192">
+               </Location>
+               <Location
+                  uuid = "13CF583B-11DE-4BCE-931E-C7B295834359 - 36457150c169ee99"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Todo_RestAPI.TodoListViewModel.deleteATodo(indexPath: Foundation.IndexPath) -&gt; ()"
+                  moduleName = "Todo+RestAPI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/wonjun-yeon/Desktop/Todo+RestAPI(MVVM)/Todo+RestAPI/ViewModel/TodoListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "130"
+                  endingLineNumber = "130"
+                  offsetFromSymbolStart = "176">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D06387FA-5CE1-4299-938F-99472A2F8534"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Todo+RestAPI/ViewModel/TodoListViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
+            landmarkName = "deleteATodo(indexPath:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "11042604-8152-431B-A517-73D74F6FF407"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Todo+RestAPI/ViewModel/TodoListViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
+            landmarkName = "deleteATodo(indexPath:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -64,7 +64,7 @@ extension TodosAPI {
     ///   - id: 삭제할 아이템 아이디
     ///   - completion: 응답 결과
     
-    static func deleteATodo(id: Int, completion: @escaping(Result<Todo, ApiError>) -> Void) {
+    static func deleteATodo(id: Int, completion: @escaping (Result<Int, ApiError>) -> Void) {
         
         print(#fileID, #function, #line, "- deleteSelectedTodos호출됨 - /id: \(id)")
         
@@ -114,7 +114,15 @@ extension TodosAPI {
             //JSON -> Struct로 변경, 즉 Decoding, 데이터 파싱
             if let jsonData = data {
                 // convert data to our swift model
-                print(String(data: jsonData, encoding: .utf8))
+                // convert data to our swift model
+                do {
+                    let baseResponse = try JSONDecoder().decode(Int.self, from: jsonData)
+                    
+                    completion(.success(baseResponse))
+                } catch {
+                    // decoding error
+                    completion(.failure(ApiError.decodingError))
+                }
             }
         }.resume()
         

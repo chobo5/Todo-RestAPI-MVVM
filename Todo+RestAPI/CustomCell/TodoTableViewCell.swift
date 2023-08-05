@@ -14,6 +14,9 @@ class TodoTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet var progressButtons: [UIButton]!
     
+    var cellViewModel: TodoListCellViewModel?
+    var listViewModel: TodoListViewModel?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         cellView.layer.cornerRadius = 5
@@ -26,6 +29,53 @@ class TodoTableViewCell: UITableViewCell {
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0))
     }
     
+    @IBAction func TabProgressButtons(_ sender: Any) {
+        guard let button = sender as? UIButton else { return }
+        
+        let contentView = button.superview?.superview
+        
+        guard let cell = contentView?.superview as? UITableViewCell else { return }
+        
+        let tableView = cell.superview as! UITableView
+        
+        if let indexPath = tableView.indexPath(for: cell) {
+            if button.tag == 0 {
+                //todoListCellViewModel의 progressCount변경
+                self.cellViewModel?.changeProgressCount(progressCount: 0)
+                //progressCount UI변경
+                self.progressButtons.forEach { button in
+                    if button.tag <= 0 {
+                        button.tintColor = UIColor.importanceBlue
+                    } else {
+                        button.tintColor = UIColor.deselectedColor
+                    }
+                }
+                
+            } else if button.tag == 1 {
+                //todoListCellViewModel의 progressCount변경 & 전달
+                self.cellViewModel?.changeProgressCount(progressCount: 1)
+                //progressCount UI변경
+                self.progressButtons.forEach { button in
+                    if button.tag <= 1 {
+                        button.tintColor = UIColor.importanceBlue
+                    } else {
+                        button.tintColor = UIColor.deselectedColor
+                    }
+                }
+                
+            } else {
+                //todoListCellViewModel의 progressCount변경 & 전달
+                self.cellViewModel?.changeProgressCount(progressCount: 2)
+                //progressCount UI변경
+                self.progressButtons.forEach { button in
+                    button.tintColor = UIColor.importanceBlue
+                }
+            }
+    
+            self.listViewModel?.updateTodoArray(todo: self.cellViewModel?.todo, indexPath: indexPath)
+        }
+        
+    }
     
 //     Cell 데이터 적용
     func configure(with viewModel: TodoListCellViewModel) {

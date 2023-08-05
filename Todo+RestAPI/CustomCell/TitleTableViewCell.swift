@@ -11,6 +11,7 @@ class TitleTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleTextField: UITextField!
     
+    var viewModel: DetailTodoViewModel?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -23,5 +24,11 @@ class TitleTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    func configData() {
+        
+        titleTextField.text = viewModel?.todo.value?.title ?? ""
+    }
+    
     
 }

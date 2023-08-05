@@ -11,8 +11,6 @@ class PriorityTableViewCell: UITableViewCell {
     
     @IBOutlet var priorityButtons: [CustomButton]!
     
-    var priorityCount: Int = 0
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

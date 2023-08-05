@@ -157,8 +157,8 @@
 			isa = PBXGroup;
 			children = (
 				CAC1C15B2A1F9BA700E878BB /* TodoListViewModel.swift */,
-				CAC1C1652A2CE41A00E878BB /* TodoListCellViewModel.swift */,
 				CAC1C1612A275B4000E878BB /* DetailTodoViewModel.swift */,
+				CAC1C1652A2CE41A00E878BB /* TodoListCellViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
